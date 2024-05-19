@@ -13,7 +13,7 @@ std::unique_ptr<EditorScene::EmissiveEntityElement> EditorScene::EmissiveEntityE
             EmissiveEntityRenderer::EmissiveEntityMaterial{
                 glm::vec4{1.0f, 1.0f, 1.0f, 1.0f}
             }
-        },
+        },                                                
         EmissiveEntityRenderer::RenderData{
             scene_context.texture_loader.default_white_texture()
         }

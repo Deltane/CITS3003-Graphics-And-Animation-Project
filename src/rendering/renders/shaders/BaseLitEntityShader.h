@@ -24,6 +24,7 @@ struct BaseLitEntityMaterial {
     glm::vec4 specular_tint;
     glm::vec4 ambient_tint;
     float shininess;
+    float texture_scale;
 };
 
 struct BaseLitEntityInstanceData : public BaseEntityInstanceData {
@@ -35,7 +36,7 @@ struct BaseLitEntityInstanceData : public BaseEntityInstanceData {
 
 struct BaseLitEntityRenderData {
     BaseLitEntityRenderData(std::shared_ptr<TextureHandle> diffuse_texture, std::shared_ptr<TextureHandle> specular_map_texture)
-        : diffuse_texture(std::move(diffuse_texture)), specular_map_texture(std::move(specular_map_texture)) {}
+            : diffuse_texture(std::move(diffuse_texture)), specular_map_texture(std::move(specular_map_texture)) {}
 
     std::shared_ptr<TextureHandle> diffuse_texture;
     std::shared_ptr<TextureHandle> specular_map_texture;
@@ -53,6 +54,7 @@ protected:
     int specular_tint_location{};
     int ambient_tint_location{};
     int shininess_location{};
+    int texture_scale_location{};
 
     static const uint POINT_LIGHT_BINDING = 0;
 

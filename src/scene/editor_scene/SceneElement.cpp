@@ -19,14 +19,14 @@ void EditorScene::SceneElement::visit_children_recursive(const std::function<voi
 json EditorScene::SceneElement::texture_to_json(const std::shared_ptr<TextureHandle>& texture) {
     if (!texture->get_filename().has_value()) {
         return {
-            {"error", Formatter() << "Texture does not have a filename so can not be exported, and has been skipped."}
+                {"error", Formatter() << "Texture does not have a filename so can not be exported, and has been skipped."}
         };
     }
 
     return {
-        {"filename",   texture->get_filename().value()},
-        {"is_srgb",    texture->is_srgb()},
-        {"is_flipped", texture->is_flipped()},
+            {"filename",   texture->get_filename().value()},
+            {"is_srgb",    texture->is_srgb()},
+            {"is_flipped", texture->is_flipped()},
     };
 }
 
@@ -94,7 +94,11 @@ void EditorScene::LocalTransformComponent::add_local_transform_imgui_edit_sectio
 }
 
 glm::mat4 EditorScene::LocalTransformComponent::calc_model_matrix() const {
-    return glm::translate(position) * glm::scale(scale);
+    // This is the only order that seems to work for all axis'
+    glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), euler_rotation.y, glm::vec3(0, 1, 0)); // Y
+    rotation = glm::rotate(rotation, euler_rotation.x, glm::vec3(1, 0, 0)); // X
+    rotation = glm::rotate(rotation, euler_rotation.z, glm::vec3(0, 0, 1)); // Z
+    return glm::translate(position) * rotation * glm::scale(scale);
 }
 
 void EditorScene::LocalTransformComponent::update_local_transform_from_json(const json& json) {
@@ -106,9 +110,9 @@ void EditorScene::LocalTransformComponent::update_local_transform_from_json(cons
 
 json EditorScene::LocalTransformComponent::local_transform_into_json() const {
     return {"local_transform", {
-        {"position", position},
-        {"euler_rotation", euler_rotation},
-        {"scale", scale},
+            {"position", position},
+            {"euler_rotation", euler_rotation},
+            {"scale", scale},
     }};
 }
 
@@ -118,6 +122,20 @@ void EditorScene::LitMaterialComponent::add_material_imgui_edit_section(MasterRe
     ImGui::Text("Material");
 
     // Add UI controls here
+    ImGui::ColorEdit3("Ambient Tint", &material.ambient_tint[0]);
+    if (ImGui::IsItemActive()) {
+        material_changed = true;
+    }
+
+    ImGui::ColorEdit3("Diffuse Tint", &material.diffuse_tint[0]);
+    if (ImGui::IsItemActive()) {
+        material_changed = true;
+    }
+
+    ImGui::ColorEdit3("Specular Tint", &material.specular_tint[0]);
+    if (ImGui::IsItemActive()) {
+        material_changed = true;
+    }
 
     ImGui::Spacing();
     if (material_changed) {
@@ -135,10 +153,10 @@ void EditorScene::LitMaterialComponent::update_material_from_json(const json& js
 
 json EditorScene::LitMaterialComponent::material_into_json() const {
     return {"material", {
-        {"diffuse_tint", material.diffuse_tint},
-        {"specular_tint", material.specular_tint},
-        {"ambient_tint", material.ambient_tint},
-        {"shininess", material.shininess},
+            {"diffuse_tint", material.diffuse_tint},
+            {"specular_tint", material.specular_tint},
+            {"ambient_tint", material.ambient_tint},
+            {"shininess", material.shininess},
     }};
 }
 
@@ -148,6 +166,10 @@ void EditorScene::EmissiveMaterialComponent::add_emissive_material_imgui_edit_se
     ImGui::Text("Emissive Material");
 
     // Add UI controls here
+    ImGui::ColorEdit3("Emission Tint", &material.emission_tint[0]);
+    if (ImGui::IsItemActive()) {
+        material_changed = true;
+    }
 
     ImGui::Spacing();
     if (material_changed) {
@@ -162,7 +184,7 @@ void EditorScene::EmissiveMaterialComponent::update_emissive_material_from_json(
 
 json EditorScene::EmissiveMaterialComponent::emissive_material_into_json() const {
     return {"material", {
-        {"emission_tint", material.emission_tint},
+            {"emission_tint", material.emission_tint},
     }};
 }
 
