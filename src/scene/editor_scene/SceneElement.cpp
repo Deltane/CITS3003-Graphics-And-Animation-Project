@@ -137,6 +137,11 @@ void EditorScene::LitMaterialComponent::add_material_imgui_edit_section(MasterRe
         material_changed = true;
     }
 
+    ImGui::SliderFloat("Shininess", &material.shininess, 100.0f, 0.0f);
+    if (ImGui::IsItemActive()) {
+        material_changed = true;
+    }
+
     ImGui::Spacing();
     if (material_changed) {
         update_instance_data();
