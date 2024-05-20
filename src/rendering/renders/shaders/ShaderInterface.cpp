@@ -50,22 +50,21 @@ bool ShaderInterface::reload_files() {
 }
 
 void ShaderInterface::recompile(
-    std::unordered_map<std::string, std::string> new_vert_defines,
-    std::unordered_map<std::string, std::string> new_frag_defines) {
+        std::unordered_map<std::string, std::string> new_vert_defines,
+        std::unordered_map<std::string, std::string> new_frag_defines) {
 
     vert_defines = std::move(new_vert_defines);
     frag_defines = std::move(new_frag_defines);
 
-    std::string realised_vertex_code = apply_defines_and_includes(vertex_code, SHADER_DIR + "/" + vertex_path, vert_defines).value(); // Will throw exception on failure;
-    std::string realised_fragment_code = apply_defines_and_includes(fragment_code, SHADER_DIR + "/" + fragment_path, frag_defines).value(); // Will throw exception on failure;
+    std::string realised_vertex_code = apply_defines_and_includes(vertex_code, SHADER_DIR + "/" + vertex_path, vert_defines).value();
+    std::string realised_fragment_code = apply_defines_and_includes(fragment_code, SHADER_DIR + "/" + fragment_path, frag_defines).value();
 
-    uint vertex_shader = compile_shader_code(realised_vertex_code, GL_VERTEX_SHADER, shader_name).value(); // Will throw exception on failure
-    uint fragment_shader = compile_shader_code(realised_fragment_code, GL_FRAGMENT_SHADER, shader_name).value(); // Will throw exception on failure
+    uint vertex_shader = compile_shader_code(realised_vertex_code, GL_VERTEX_SHADER, shader_name).value();
+    uint fragment_shader = compile_shader_code(realised_fragment_code, GL_FRAGMENT_SHADER, shader_name).value();
 
     auto old_program = program_id;
-    program_id = link_program(vertex_shader, fragment_shader, shader_name).value(); // Will throw exception on failure
+    program_id = link_program(vertex_shader, fragment_shader, shader_name).value();
 
-    glDeleteProgram(old_program);
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 
@@ -78,7 +77,7 @@ void ShaderInterface::recompile(
 
 void ShaderInterface::set_vert_define(std::string key, std::string value, bool defer_recompile) {
     auto existing = vert_defines.find(key);
-    if (existing != vert_defines.end() && existing->second == value) return; // No work to do
+    if (existing != vert_defines.end() && existing->second == value) return; // No change needed
 
     vert_defines[std::move(key)] = std::move(value);
     if (!defer_recompile) {
@@ -88,7 +87,7 @@ void ShaderInterface::set_vert_define(std::string key, std::string value, bool d
 
 void ShaderInterface::set_frag_define(std::string key, std::string value, bool defer_recompile) {
     auto existing = frag_defines.find(key);
-    if (existing != frag_defines.end() && existing->second == value) return; // No work to do
+    if (existing != frag_defines.end() && existing->second == value) return; // No change needed
 
     frag_defines[std::move(key)] = std::move(value);
     if (!defer_recompile) {
