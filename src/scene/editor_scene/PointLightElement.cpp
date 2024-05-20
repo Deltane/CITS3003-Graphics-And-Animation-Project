@@ -5,6 +5,7 @@
 
 #include "rendering/imgui/ImGuiManager.h"
 #include "scene/SceneContext.h"
+#include <glm/gtc/random.hpp>
 
 std::unique_ptr<EditorScene::PointLightElement> EditorScene::PointLightElement::new_default(const SceneContext& scene_context, EditorScene::ElementRef parent) {
     auto light_element = std::make_unique<PointLightElement>(
@@ -69,6 +70,11 @@ void EditorScene::PointLightElement::add_imgui_edit_section(MasterRenderScene& r
     ImGui::Spacing();
     ImGui::DragFloat("Intensity", &light->colour.a, 0.01f, 0.0f, FLT_MAX);
     ImGui::DragDisableCursor(scene_context.window);
+
+    if (ImGui::Button("Random Colour")) {
+        light->colour = glm::vec4{glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f), light->colour.a};
+        transformUpdated = true;
+    }
 
     ImGui::Spacing();
     ImGui::Text("Visuals");
