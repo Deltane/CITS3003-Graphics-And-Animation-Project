@@ -192,6 +192,13 @@ void EditorScene::EmissiveMaterialComponent::add_emissive_material_imgui_edit_se
         material_changed = true;
     }
 
+    if (ImGui::Button("Random Colour")) {
+        material.emission_tint[0] = static_cast<float>(rand() % 256) / 255.0f;
+        material.emission_tint[1] = static_cast<float>(rand() % 256) / 255.0f;
+        material.emission_tint[2] = static_cast<float>(rand() % 256) / 255.0f;
+        material_changed = true;
+    }
+
     ImGui::Spacing();
     if (material_changed) {
         update_instance_data();
