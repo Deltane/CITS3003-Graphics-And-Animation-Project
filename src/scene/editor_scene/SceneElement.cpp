@@ -1,6 +1,7 @@
 #include "SceneElement.h"
 #include "scene/SceneContext.h"
 #include "rendering/imgui/ImGuiManager.h"
+#include <cstdlib> // for random
 
 void EditorScene::SceneElement::add_imgui_edit_section(MasterRenderScene& /*render_scene*/, const SceneContext& /*scene_context*/) {
     ImGui::InputText("Name", &name, 0);
@@ -139,6 +140,21 @@ void EditorScene::LitMaterialComponent::add_material_imgui_edit_section(MasterRe
 
     ImGui::SliderFloat("Shininess", &material.shininess, 100.0f, 0.0f);
     if (ImGui::IsItemActive()) {
+        material_changed = true;
+    }
+
+    if (ImGui::Button("Random Colour")) {
+        material.ambient_tint[0] = static_cast<float>(rand() % 256) / 255.0f;
+        material.ambient_tint[1] = static_cast<float>(rand() % 256) / 255.0f;
+        material.ambient_tint[2] = static_cast<float>(rand() % 256) / 255.0f;
+
+        material.diffuse_tint[0] = static_cast<float>(rand() % 256) / 255.0f;
+        material.diffuse_tint[1] = static_cast<float>(rand() % 256) / 255.0f;
+        material.diffuse_tint[2] = static_cast<float>(rand() % 256) / 255.0f;
+
+        material.specular_tint[0] = static_cast<float>(rand() % 256) / 255.0f;
+        material.specular_tint[1] = static_cast<float>(rand() % 256) / 255.0f;
+        material.specular_tint[2] = static_cast<float>(rand() % 256) / 255.0f;
         material_changed = true;
     }
 
